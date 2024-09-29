@@ -80,22 +80,18 @@
 </template>
 
 <script>
-// import { store } from '@/store/index'
-
-const time = 1
-
 export default {
   name: 'LaundryMachine',
   data() {
     return {
-      duration: time * 60,
-      isEmpty: true,
-      inUse: false,
-      isFinish: false,
-      rate: 10,
-      makingSelection: false,
-      timerRunning: false,
-      interval: null
+      duration: this.$store.state.duration,
+      isEmpty: this.$store.state.isEmpty,
+      inUse: this.$store.state.inUse,
+      isFinish: this.$store.state.isFinish,
+      rate: this.$store.state.rate,
+      makingSelection: this.$store.state.makingSelection,
+      timerRunning: this.$store.state.timerRunning,
+      interval: this.$store.state.interval
     }
   },
   computed: {
@@ -134,16 +130,16 @@ export default {
       }, 1000)
     },
     finish() {
-      this.duration = time * 60
+      this.duration = this.$store.state.duration
       this.inUse = false
       this.isEmpty = false
       this.isFinish = true
     },
     reset() {
-      this.duration = time * 60
-      this.inUse = false
-      this.isFinish = false
-      this.isEmpty = true
+      this.duration = this.$store.state.duration
+      this.inUse = this.$store.state.inUse
+      this.isEmpty = this.$store.state.isEmpty
+      this.isFinish = this.$store.state.isFinish
     }
   }
 }
