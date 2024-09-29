@@ -80,6 +80,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'LaundryMachine',
   data() {
@@ -91,11 +93,13 @@ export default {
       rate: this.$store.state.rate,
       makingSelection: this.$store.state.makingSelection,
       timerRunning: this.$store.state.timerRunning,
-      interval: this.$store.state.interval
+      interval: this.$store.state.interval,
+      post: {}
     }
   },
   computed: {
     cost() {
+      console.log(this.duration)
       return this.rate * (this.duration / 60)
     },
     time() {
@@ -126,6 +130,10 @@ export default {
             this.finish()
             clearInterval(this.interval)
           }
+
+          if (this.duration == 59) {
+            this.notify()
+          }
         }
       }, 1000)
     },
@@ -140,6 +148,52 @@ export default {
       this.inUse = this.$store.state.inUse
       this.isEmpty = this.$store.state.isEmpty
       this.isFinish = this.$store.state.isFinish
+    },
+    async getToken() {
+      try {
+        const { data } = await axios.post(
+          'https://notify-bot.line.me/oauth/token',
+          {
+            grant_type: 'authorization_code',
+            code: 'UhOchPD6AKSbZrxFXbOUQe',
+            redirect_uri: 'http://localhost:5173/line/redirect',
+            client_id: 'jEiKVR0q0xU5aXL9nHrI3r',
+            client_secret: '4o8VE6wqS65Sa3cUdBWbTa2o688HZRWsoIjfw4l8v4V'
+          },
+          {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
+          }
+        )
+        this.post = data
+      } catch (error) {
+        console.log(error)
+      }
+    },
+
+    async notify() {
+      try {
+        const { data } = await axios.post(
+          'https://notify-api.line.me/api/notify',
+          {
+            message: 'Test'
+          },
+          {
+            headers: {
+              Authorization: 'Bearer vnpW0ALe9z7nWyhHMIUXU5UxdpnkSTxUZD3pErsfUOn',
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
+          }
+        )
+        this.post = data
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    beforeMount() {
+      this.getToken()
+      this.notify()
     }
   }
 }
