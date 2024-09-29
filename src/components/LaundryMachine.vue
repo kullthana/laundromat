@@ -177,7 +177,7 @@ export default {
         const { data } = await axios.post(
           'https://notify-api.line.me/api/notify',
           {
-            message: 'Test'
+            message: 'Almost Finish!'
           },
           {
             headers: {
